@@ -84,7 +84,7 @@ class Automate(AutomateBase):
             return False
         for state in auto.listStates:
             for lettre in auto.getAlphabetFromTransitions():
-                if(len(auto.succElem(state, lettre)) != 1):
+                if(len(auto.succElem(state, lettre)) > 1):
                     return False
         return True
         
@@ -96,10 +96,15 @@ class Automate(AutomateBase):
         rend l'automate complété d'auto, par rapport à alphabet
         """
         res = copy.deepcopy(auto)
+        
+        # Creation d'un état "poubelle", on a pour hypothèse qu'aucun état a un label -1
+        poubelle = State(-1, False, False)
+        res.addState(poubelle)
+        
         for state in auto.listStates:
             for lettre in auto.getAlphabetFromTransitions():
                 if(len(auto.succElem(state, lettre)) < 1):
-                    t = Transition(state, lettre, state)
+                    t = Transition(state, lettre, poubelle)
                     res.addTransition(t)
         return res
 
